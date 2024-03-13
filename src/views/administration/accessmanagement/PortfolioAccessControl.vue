@@ -33,7 +33,7 @@ import permissionsMixin from '../../../mixins/permissionsMixin';
 import { Switch as cSwitch } from '@coreui/vue';
 import BInputGroupFormInput from '../../../forms/BInputGroupFormInput';
 import configPropertyMixin from '../mixins/configPropertyMixin';
-import router from '@/router'
+import router from '@/router';
 
 export default {
   props: {
@@ -124,7 +124,10 @@ export default {
                 }
               },
               projectUri: function (uuid) {
-                const href = router.resolve({name: 'Project', params: {uuid: uuid}}).href;
+                const href = router.resolve({
+                  name: 'Project',
+                  params: { uuid: uuid },
+                }).href;
                 const sanitizedHref = xssFilters.uriInUnQuotedAttr(href);
                 return sanitizedHref;
               },
