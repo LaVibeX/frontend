@@ -519,7 +519,10 @@ export default {
       let prevComponentUUID = '';
       data.forEach((row) => {
         const componentUUID = row.component.uuid;
-        const aliases = common.resolveVulnAliases(row.vulnerability.source, row.vulnerability.aliases);
+        const aliases = common.resolveVulnAliases(
+          row.vulnerability.source,
+          row.vulnerability.aliases,
+        );
         if (prevComponentUUID !== componentUUID) {
           aliasList = [];
         }
