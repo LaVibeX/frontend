@@ -259,6 +259,7 @@
           :key="this.uuid"
           :uuid="this.uuid"
           v-on:total="totalFindingsIncludingAliases = $event"
+          v-on:totalFiltered="totalFindings = $event"
         />
       </b-tab>
       <b-tab

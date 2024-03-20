@@ -149,6 +149,7 @@ export default {
   data() {
     return {
       showSuppressedFindings: this.showSuppressedFindings,
+      aliasTotal: 0,
       labelIcon: {
         dataOn: '\u2713',
         dataOff: '\u2715',
@@ -512,13 +513,38 @@ export default {
         silent: true,
       });
     },
+    calculateFilteredTotal(data) {
+      let filteredList = [];
+      let aliasList = [];
+      let prevComponentUUID = '';
+      data.forEach((row) => {
+        const componentUUID = row.component.uuid;
+        const aliases = common.resolveVulnAliases(row.vulnerability.source, row.vulnerability.aliases);
+        if (prevComponentUUID !== componentUUID) {
+          aliasList = [];
+        }
+        if (!aliasList.includes(row.vulnerability.vulnId)) {
+          filteredList.push(row.vulnerability.vulnId);
+          prevComponentUUID = componentUUID;
+          for (let i = 0; i < aliases.length; i++) {
+            let alias = aliases[i];
+            aliasList.push(alias.vulnId);
+          }
+        }
+      });
+      return filteredList.length;
+    },
     tableLoaded: function (data) {
       loadUserPreferencesForBootstrapTable(
         this,
         'ProjectFindings',
         this.$refs.table.columns,
       );
+      // use calculateFilteredTotal to get total vulnerabilities without duplicates in same component
+      const filteredTotal = this.calculateFilteredTotal(data);
+
       this.$emit('total', data.total); // the unfiltered length
+      this.$emit('totalFiltered', filteredTotal); // the filtered length without duplicates in same component
       if (
         this.$route.params.vulnerability &&
         this.$refs.table.getData().length === 1
